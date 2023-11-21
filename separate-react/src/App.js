@@ -1,23 +1,33 @@
 import logo from './logo.svg';
 import './App.css';
+import axios from 'axios';
+import { useEffect, useState  } from 'react';
 
 function App() {
+
+  const [items, setItems] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('https://localhost:7105/WeatherForecast');
+        setItems(response.data);
+      } catch(error) {
+        console.error('Error fetching data: ', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h2>Items List</h2>
+      <ul>
+        {items.map(item => (
+          <li key={item.date}>On {item.date} temp is {item.temperatureC} and it's {item.summary}</li>
+        ))}
+      </ul>
     </div>
   );
 }
